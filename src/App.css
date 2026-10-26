@@ -1,0 +1,292 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f7f4ed;
+  color: #2f3a2f;
+}
+
+a {
+  color: inherit;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+
+.header {
+  height: 78px;
+  padding: 0 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 1px solid #e8e2d5;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #b68b3c;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 20px;
+  color: #394735;
+}
+
+.brand p {
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: #8a8a80;
+  letter-spacing: 1px;
+}
+
+.header nav {
+  display: flex;
+  gap: 30px;
+}
+
+.header nav a {
+  text-decoration: none;
+  font-size: 14px;
+  color: #555b50;
+}
+
+.header nav a:hover {
+  color: #b68b3c;
+}
+
+/* Hero */
+
+.hero {
+  min-height: 390px;
+  padding: 70px 7%;
+  display: flex;
+  align-items: center;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(35, 48, 35, 0.82),
+      rgba(35, 48, 35, 0.45),
+      rgba(35, 48, 35, 0.18)
+    ),
+    linear-gradient(135deg, #60745c, #b7a77d);
+}
+
+.hero-content {
+  max-width: 620px;
+  color: white;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #e5c98d;
+}
+
+.hero h2 {
+  margin: 0;
+  font-size: clamp(42px, 6vw, 68px);
+  line-height: 1.05;
+  font-weight: 700;
+}
+
+.hero-text {
+  max-width: 520px;
+  margin-top: 22px;
+  font-size: 17px;
+  line-height: 1.7;
+  color: #f3f0e7;
+}
+
+/* Search */
+
+.search-card {
+  width: 86%;
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 34px;
+  position: relative;
+  z-index: 2;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 12px 35px rgba(50, 50, 30, 0.12);
+}
+
+.section-title {
+  margin-bottom: 24px;
+}
+
+.section-title p {
+  margin: 0 0 6px;
+  color: #b68b3c;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.section-title h2 {
+  margin: 0;
+  font-size: 25px;
+  color: #354331;
+}
+
+.search-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 18px;
+  align-items: end;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #596054;
+}
+
+.form-group input {
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #dcd8cd;
+  border-radius: 8px;
+  background: #faf9f5;
+  color: #333a32;
+  font-size: 14px;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #b68b3c;
+  box-shadow: 0 0 0 3px rgba(182, 139, 60, 0.12);
+}
+
+.search-button {
+  height: 48px;
+  padding: 0 28px;
+  border: none;
+  border-radius: 8px;
+  background: #b68b3c;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.search-button:hover {
+  background: #9e762f;
+  transform: translateY(-1px);
+}
+
+/* Information cards */
+
+.info-section {
+  width: 86%;
+  max-width: 1100px;
+  margin: 70px auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.info-card {
+  padding: 28px;
+  background: white;
+  border: 1px solid #e8e2d5;
+  border-radius: 12px;
+}
+
+.info-card span {
+  font-size: 13px;
+  font-weight: 700;
+  color: #b68b3c;
+}
+
+.info-card h3 {
+  margin: 16px 0 10px;
+  color: #354331;
+  font-size: 19px;
+}
+
+.info-card p {
+  margin: 0;
+  color: #777a72;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* Footer */
+
+footer {
+  margin-top: auto;
+  padding: 25px 7%;
+  text-align: center;
+  background: #354331;
+  color: #d8d9d1;
+  font-size: 12px;
+}
+
+/* Responsive */
+
+@media (max-width: 800px) {
+  .header {
+    height: auto;
+    padding: 18px 5%;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .header nav {
+    gap: 18px;
+  }
+
+  .hero {
+    min-height: 350px;
+    padding: 55px 7%;
+  }
+
+  .search-card {
+    width: 90%;
+    padding: 25px;
+  }
+
+  .search-form {
+    grid-template-columns: 1fr;
+  }
+
+  .info-section {
+    width: 90%;
+    grid-template-columns: 1fr;
+    margin: 50px auto;
+  }
+}
