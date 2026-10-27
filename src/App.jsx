@@ -14,6 +14,11 @@ const [bookingResult, setBookingResult] = useState(null)
 const [bookingId, setBookingId] = useState('')
 const [cancelStatus, setCancelStatus] = useState('idle')
 const [cancelMessage, setCancelMessage] = useState('')
+const [roomType, setRoomType] = useState('')
+const [newBaseRate, setNewBaseRate] = useState('')
+const [changedBy, setChangedBy] = useState('')
+const [rateStatus, setRateStatus] = useState('idle')
+const [rateResult, setRateResult] = useState(null)
 
   const handleSearch = async (e) => {
     e.preventDefault()
@@ -146,6 +151,44 @@ if (checkIn < today || checkOut <= checkIn) {
       setCancelStatus('error')
     }
   }
+  const handleUpdateRate = async (e) => {
+  e.preventDefault()
+  setRateStatus('loading')
+  setRateResult(null)
+
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/update-base-rate`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          room_type: roomType,
+          new_base_rate: Number(newBaseRate),
+          changed_by: changedBy,
+        }),
+      }
+    )
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      setRateStatus('error')
+      setRateResult(data)
+      return
+    }
+
+    setRateStatus('success')
+    setRateResult(data)
+  } catch (err) {
+    setRateStatus('error')
+    setRateResult({ error: 'Không kết nối được máy chủ.' })
+  }
+}
     return ( <div className="app">
       <header className="header">
         <div className="brand">
@@ -160,6 +203,7 @@ if (checkIn < today || checkOut <= checkIn) {
           <a href="#search">Tìm phòng</a>
           <a href="#booking">Đặt phòng</a>
           <a href="#cancel">Hủy phòng</a>
+          <a href="#rate-management">Quản lý giá</a>
         </nav>
       </header>
 
@@ -351,6 +395,81 @@ Khách: {guestName}
             <p>Tra cứu và hủy booking khi cần thiết.</p>
           </div>
         </section>
+        <section className="search-card" id="rate-management">
+  <div className="section-title">
+    <p>QUẢN LÝ GIÁ</p>
+    <h2>Cập nhật giá phòng</h2>
+  </div>
+
+  <form onSubmit={handleUpdateRate} className="search-form">
+    <div className="form-group">
+      <label htmlFor="room-type">Loại phòng</label>
+      <input
+        id="room-type"
+        type="text"
+        value={roomType}
+        onChange={(e) => setRoomType(e.target.value)}
+        placeholder="Ví dụ: Deluxe"
+        required
+      />
+    </div>
+
+    <div className="form-group">
+      <label htmlFor="new-base-rate">Giá cơ bản mới</label>
+      <input
+        id="new-base-rate"
+        type="number"
+        min="0"
+        value={newBaseRate}
+        onChange={(e) => setNewBaseRate(e.target.value)}
+        placeholder="Nhập giá mới"
+        required
+      />
+    </div>
+
+    <div className="form-group">
+      <label htmlFor="changed-by">Người thay đổi</label>
+      <input
+        id="changed-by"
+        type="text"
+        value={changedBy}
+        onChange={(e) => setChangedBy(e.target.value)}
+        placeholder="Tên nhân viên"
+        required
+      />
+    </div>
+
+    <button
+      type="submit"
+      className="search-button"
+      disabled={rateStatus === 'loading'}
+    >
+      {rateStatus === 'loading' ? 'Đang cập nhật...' : 'Cập nhật giá'}
+    </button>
+  </form>
+
+  {rateStatus === 'success' && (
+    <div>
+      <p>Cập nhật giá thành công!</p>
+      <p>
+        Giá cũ: {rateResult?.result?.old_base_rate}
+      </p>
+      <p>
+        Giá mới: {rateResult?.result?.new_base_rate}
+      </p>
+      <p>Giá theo từng kênh:</p>
+      <pre>
+        {JSON.stringify(rateResult?.result?.channel_prices, null, 2)}
+      </pre>
+    </div>
+  )}
+
+  {rateStatus === 'error' && (
+    <p>
+      {rateResult?.error || 'Không thể cập nhật giá.'}
+    </p>
+  )}
+</section>
       </main>
 
       <footer>
