@@ -13,9 +13,17 @@ const [bookingStatus, setBookingStatus] = useState('idle')
 const [bookingResult, setBookingResult] = useState(null)
 const [bookingId, setBookingId] = useState('')
 const [cancelStatus, setCancelStatus] = useState('idle')
+const [cancelMessage, setCancelMessage] = useState('')
 
   const handleSearch = async (e) => {
     e.preventDefault()
+    const today = new Date().toISOString().split('T')[0]
+
+if (checkIn < today || checkOut <= checkIn) {
+  setStatus('error')
+  setMessage('Ngày nhận/trả phòng không hợp lệ.')
+  return
+}
     setStatus('loading')
     setMessage('')
     setRooms([])
@@ -35,7 +43,7 @@ const [cancelStatus, setCancelStatus] = useState('idle')
       )
 
       const data = await response.json()
-      console.log('BOOKING RESPONSE:', data)
+     
       
 
       if (!response.ok) {
@@ -123,6 +131,11 @@ const [cancelStatus, setCancelStatus] = useState('idle')
 
       if (!response.ok) {
         setCancelStatus('error')
+        setCancelMessage(
+  response.status === 404
+    ? 'Không tìm thấy booking với mã này.'
+    : data.error || 'Không thể hủy booking.'
+)
         return
       }
 
@@ -236,6 +249,9 @@ const [cancelStatus, setCancelStatus] = useState('idle')
               Phòng đã chọn: <strong>{selectedRoom.room_id}</strong> –{' '}
               {selectedRoom.room_type}
             </p>
+            <p>
+  Nhận phòng: <strong>{checkIn}</strong> · Trả phòng: <strong>{checkOut}</strong>
+</p>
 
             <form onSubmit={handleBooking} className="search-form">
               <div className="form-group">
@@ -274,6 +290,12 @@ const [cancelStatus, setCancelStatus] = useState('idle')
     Đặt phòng thành công!
     <br />
 Mã booking: <strong>{bookingResult?.booking?.booking_id}</strong>
+<br />
+Phòng: <strong>{selectedRoom.room_id}</strong> – {selectedRoom.room_type}
+<br />
+Ngày: {checkIn} đến {checkOut}
+<br />
+Khách: {guestName}
   </p>
 )}
           </section>
@@ -306,7 +328,7 @@ Mã booking: <strong>{bookingResult?.booking?.booking_id}</strong>
 )}
 
 {cancelStatus === 'error' && (
-  <p>Không thể hủy booking. Vui lòng kiểm tra lại mã booking.</p>
+<p>{cancelMessage}</p>
 )}
           </form>
         </section>
