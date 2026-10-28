@@ -11,6 +11,7 @@ const [selectedRoom, setSelectedRoom] = useState(null)
 const [guestName, setGuestName] = useState('')
 const [guestEmail, setGuestEmail] = useState('')
 const [guestPhone, setGuestPhone] = useState('')
+const [guests, setGuests] = useState([])
 const [bookingStatus, setBookingStatus] = useState('idle')
 const [bookingResult, setBookingResult] = useState(null)
 const [bookingId, setBookingId] = useState('')
@@ -68,7 +69,24 @@ if (checkIn < today || checkOut <= checkIn) {
       setMessage('Không kết nối được máy chủ.')
     }
   }
+  const addGuest = () => {
+    if (!guestName.trim() || !guestEmail.trim() || !guestPhone.trim()) {
+      return
+    }
 
+    setGuests([
+      ...guests,
+      {
+       guest_name: guestName,
+email: guestEmail,
+phone: guestPhone,
+      },
+    ])
+
+    setGuestName('')
+    setGuestEmail('')
+    setGuestPhone('')
+  }
   const handleBooking = async (e) => {
     e.preventDefault()
     setBookingStatus('loading')
@@ -91,14 +109,69 @@ if (checkIn < today || checkOut <= checkIn) {
 phone: guestPhone,
             check_in: checkIn,
             check_out: checkOut,
+            guests: guests,
           }),
         }
       )
 
       const data = await response.json()
+      if (data?.status === 'EXISTING_GUEST_CONFIRMATION_REQUIRED') {
+  const useExisting = window.confirm(
+    `${data.message}\n\nKhách hiện có: ${data.existing_guest?.guest_name}`
+  )
+
+  if (useExisting) {
+    setBookingStatus('loading')
+
+    const retryResponse = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create_booking`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          room_id: selectedRoom.room_id,
+          guest_name: guestName,
+          email: guestEmail,
+          phone: guestPhone,
+          check_in: checkIn,
+          check_out: checkOut,
+          duplicate_choice: 'use_existing',
+          existing_guest_id: data.existing_guest.guest_id,
+          guests: guests,
+        }),
+      }
+    )
+
+    const retryData = await retryResponse.json()
+    console.log('RETRY DATA:', retryData)
+
+    if (!retryResponse.ok) {
+      setBookingStatus('error')
+      setBookingResult(retryData)
+      return
+    }
+
+    setBookingStatus('success')
+    setBookingResult(retryData)
+    return
+  }
+
+  setBookingStatus('error')
+  setBookingResult({
+    error: 'Bạn chưa xác nhận sử dụng hồ sơ khách hiện có.',
+  })
+  return
+}
 
       if (response.status === 409) {
-        setBookingStatus('conflict')
+        setBookingStatus('error')
+        console.log('409 DATA:', data)
+setBookingResult(data)
+console.log('BOOKING RESULT:', data)
         return
       }
 
@@ -117,44 +190,44 @@ phone: guestPhone,
     }
   }
     const handleCancel = async (e) => {
-    e.preventDefault()
-    setCancelStatus('loading')
+  e.preventDefault()
+  setCancelStatus('loading')
 
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/cancel_booking`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({
-            booking_id: bookingId,
-          }),
-        }
-      )
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        setCancelStatus('error')
-        setCancelMessage(
-  response.status === 404
-    ? 'Không tìm thấy booking với mã này.'
-    : data.error || 'Không thể hủy booking.'
-)
-        return
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/cancel_booking`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          booking_id: bookingId,
+        }),
       }
+    )
 
-      setCancelStatus('success')
-      setBookingId('')
-      
-    } catch (err) {
+    const data = await response.json()
+
+    if (!response.ok) {
       setCancelStatus('error')
+      setCancelMessage(
+        response.status === 404
+          ? 'Không tìm thấy booking với mã này.'
+          : data.error || 'Không thể hủy booking.'
+      )
+      return
     }
+
+    setCancelStatus('success')
+    setBookingId('')
+  } catch (err) {
+    setCancelStatus('error')
+    setCancelMessage('Không kết nối được máy chủ.')
   }
+}
   const handleUpdateRate = async (e) => {
   e.preventDefault()
   setRateStatus('loading')
@@ -313,7 +386,7 @@ setBookingResult(null)
                   value={guestName}
                   onChange={(e) => setGuestName(e.target.value)}
                   placeholder="Nhập tên khách"
-                  required
+                  
                 />
               </div>
               <div className="form-group">
@@ -324,7 +397,7 @@ setBookingResult(null)
     value={guestEmail}
     onChange={(e) => setGuestEmail(e.target.value)}
     placeholder="Nhập email"
-    required
+    
   />
 </div>
 
@@ -338,10 +411,35 @@ setBookingResult(null)
     value={guestPhone}
     onChange={(e) => setGuestPhone(e.target.value)}
     placeholder="Nhập số điện thoại"
-    required
+    
   />
 </div>
+<button
+  type="button"
+  className="search-button"
+  onClick={addGuest}
+>
+  + Thêm khách
+</button>
+{guests.length > 0 && (
+  <div>
+    <h3>Danh sách khách</h3>
 
+    {guests.map((guest, index) => (
+      <p key={index}>
+        {index + 1}. {guest.guest_name} — {guest.phone} — {guest.email}
+        <button
+  type="button"
+  onClick={() => {
+    setGuests(guests.filter((_, i) => i !== index))
+  }}
+>
+  Xóa
+</button>
+      </p>
+    ))}
+  </div>
+)}
               <button
                 type="submit"
                 className="search-button"
@@ -365,13 +463,18 @@ setBookingResult(null)
   <p>
     Đặt phòng thành công!
     <br />
-Mã booking: <strong>{bookingResult?.booking?.booking_id}</strong>
+Mã booking: <strong>{bookingResult?.booking?.booking_id || bookingResult?.booking_id}</strong>
 <br />
 Phòng: <strong>{selectedRoom.room_id}</strong> – {selectedRoom.room_type}
 <br />
 Ngày: {checkIn} đến {checkOut}
 <br />
-Khách: {guestName}
+Khách: {guests.map((guest, index) => (
+  <span key={index}>
+    {index > 0 ? ', ' : ''}
+    {guest.guest_name}
+  </span>
+))}
   </p>
 )}
           </section>
