@@ -199,7 +199,7 @@ phone: guestPhone,
         <div className="brand">
           <div className="brand-logo">LV</div>
           <div>
-            <h1>Lúa Vàng Resort</h1>
+            <h1>Lụa Vàng Resort & Spa</h1>
             <p>Central Reservation System</p>
           </div>
         </div>
@@ -215,7 +215,7 @@ phone: guestPhone,
       <main>
         <section className="hero">
           <div className="hero-content">
-            <p className="eyebrow">LÚA VÀNG RESORT</p>
+            <p className="eyebrow">LỤA VÀNG RESORT & SPA</p>
             <h2>Đặt kỳ nghỉ của bạn</h2>
             <p className="hero-text">
               Tìm phòng trống, đặt phòng và quản lý booking
@@ -535,7 +535,7 @@ Khách: {guestName}
       </main>
 
       <footer>
-        <p>© 2026 Lúa Vàng Resort — Central Reservation System</p>
+     <p>© 2026 Lụa Vàng Resort & Spa — Central Reservation System</p>
       </footer>
     </div>
   )
