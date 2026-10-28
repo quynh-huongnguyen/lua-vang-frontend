@@ -501,9 +501,28 @@ Khách: {guestName}
         Giá mới: {rateResult?.result?.new_base_rate}
       </p>
       <p>Giá theo từng kênh:</p>
-      <pre>
-        {JSON.stringify(rateResult?.result?.channel_prices, null, 2)}
-      </pre>
+      <table style={{ borderCollapse: 'collapse', margin: '0 auto' }}>
+  <thead>
+    <tr>
+      <th style={{ border: '1px solid #ccc', padding: '8px 16px' }}>Kênh</th>
+      <th style={{ border: '1px solid #ccc', padding: '8px 16px' }}>Giá</th>
+    </tr>
+  </thead>
+  <tbody>
+    {Object.entries(rateResult?.result?.channel_prices || {}).map(
+      ([channel, price]) => (
+        <tr key={channel}>
+          <td style={{ border: '1px solid #ccc', padding: '8px 16px' }}>
+            {channel}
+          </td>
+          <td style={{ border: '1px solid #ccc', padding: '8px 16px' }}>
+            {Number(price).toLocaleString('vi-VN')}
+          </td>
+        </tr>
+      )
+    )}
+  </tbody>
+</table>
     </div>
   )}
 
