@@ -19,6 +19,7 @@ const [cancelMessage, setCancelMessage] = useState('')
 const [roomType, setRoomType] = useState('')
 const [newBaseRate, setNewBaseRate] = useState('')
 const [changedBy, setChangedBy] = useState('')
+const [staffCode, setStaffCode] = useState('')
 const [rateStatus, setRateStatus] = useState('idle')
 const [rateResult, setRateResult] = useState(null)
 
@@ -173,6 +174,7 @@ phone: guestPhone,
           room_type: roomType,
           new_base_rate: Number(newBaseRate),
           changed_by: changedBy,
+          staff_code: staffCode,
         }),
       }
     )
@@ -469,6 +471,17 @@ Khách: {guestName}
       />
     </div>
 
+<div className="form-group">
+  <label htmlFor="staff-code">Mã nhân viên</label>
+  <input
+    id="staff-code"
+    type="password"
+    value={staffCode}
+    onChange={(e) => setStaffCode(e.target.value)}
+    placeholder="Nhập mã nhân viên"
+    required
+  />
+</div>
     <button
       type="submit"
       className="search-button"
