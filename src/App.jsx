@@ -9,6 +9,8 @@ const [status, setStatus] = useState('idle')
 const [message, setMessage] = useState('')
 const [selectedRoom, setSelectedRoom] = useState(null)
 const [guestName, setGuestName] = useState('')
+const [guestEmail, setGuestEmail] = useState('')
+const [guestPhone, setGuestPhone] = useState('')
 const [bookingStatus, setBookingStatus] = useState('idle')
 const [bookingResult, setBookingResult] = useState(null)
 const [bookingId, setBookingId] = useState('')
@@ -84,6 +86,8 @@ if (checkIn < today || checkOut <= checkIn) {
           body: JSON.stringify({
             room_id: selectedRoom.room_id,
             guest_name: guestName,
+           email: guestEmail,
+phone: guestPhone,
             check_in: checkIn,
             check_out: checkOut,
           }),
@@ -106,7 +110,6 @@ if (checkIn < today || checkOut <= checkIn) {
 
       setBookingStatus('success')
       setBookingResult(data)
-      setBookingId(data.booking_id)
     } catch (err) {
       setBookingStatus('error')
       setBookingResult({ error: 'Không kết nối được máy chủ.' })
@@ -269,6 +272,8 @@ if (checkIn < today || checkOut <= checkIn) {
   type="button"
   onClick={() => {
     setSelectedRoom(room)
+    setBookingStatus('idle')
+setBookingResult(null)
     setTimeout(() => {
       document.getElementById('booking')?.scrollIntoView({
         behavior: 'smooth',
@@ -309,6 +314,31 @@ if (checkIn < today || checkOut <= checkIn) {
                   required
                 />
               </div>
+              <div className="form-group">
+  <label htmlFor="guest-email">Email</label>
+  <input
+    id="guest-email"
+    type="email"
+    value={guestEmail}
+    onChange={(e) => setGuestEmail(e.target.value)}
+    placeholder="Nhập email"
+    required
+  />
+</div>
+
+<div className="form-group">
+  <label htmlFor="guest-phone">Số điện thoại</label>
+  <input
+    id="guest-phone"
+    type="tel"
+    pattern="[0-9]{9,11}"
+    title="Số điện thoại gồm 9 đến 11 chữ số"
+    value={guestPhone}
+    onChange={(e) => setGuestPhone(e.target.value)}
+    placeholder="Nhập số điện thoại"
+    required
+  />
+</div>
 
               <button
                 type="submit"
