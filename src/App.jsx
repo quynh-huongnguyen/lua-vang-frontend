@@ -115,6 +115,11 @@ phone: guestPhone,
       )
 
       const data = await response.json()
+      if (data?.status === 'CONTACT_VERIFICATION_REQUIRED') {
+  setBookingStatus('error')
+  setBookingResult({ error: data.message })
+  return
+}
       if (data?.status === 'EXISTING_GUEST_CONFIRMATION_REQUIRED') {
   const useExisting = window.confirm(
     `${data.message}\n\nKhách hiện có: ${data.existing_guest?.guest_name}`
