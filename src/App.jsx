@@ -463,7 +463,8 @@ setBookingResult(null)
   <p>
     Đặt phòng thành công!
     <br />
-Mã booking: <strong>{bookingResult?.booking?.booking_id || bookingResult?.booking_id}</strong>
+Mã booking: <strong>{bookingResult?.booking?.booking_id || bookingResult?.booking_id || bookingResult?.bookings?.[0]?.booking_id}</strong>
+
 <br />
 Phòng: <strong>{selectedRoom.room_id}</strong> – {selectedRoom.room_type}
 <br />
