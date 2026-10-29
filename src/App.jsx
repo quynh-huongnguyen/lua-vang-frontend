@@ -23,6 +23,8 @@ const [changedBy, setChangedBy] = useState('')
 const [staffCode, setStaffCode] = useState('')
 const [rateStatus, setRateStatus] = useState('idle')
 const [rateResult, setRateResult] = useState(null)
+const [isAdmin, setIsAdmin] = useState(false)
+const [adminCode, setAdminCode] = useState('')
 
   const handleSearch = async (e) => {
     e.preventDefault()
@@ -281,12 +283,33 @@ console.log('BOOKING RESULT:', data)
             <p>Central Reservation System</p>
           </div>
         </div>
+<div className="admin-login">
+  <input
+    type="password"
+    value={adminCode}
+    onChange={(e) => setAdminCode(e.target.value)}
+    placeholder="Mã admin"
+  />
 
+  <button
+    type="button"
+    onClick={() => {
+      if (adminCode === 'LV2026') {
+        setIsAdmin(true)
+        setAdminCode('')
+      } else {
+        alert('Mã admin không đúng.')
+      }
+    }}
+  >
+    Đăng nhập Admin
+  </button>
+</div>
         <nav>
           <a href="#search">Tìm phòng</a>
           <a href="#booking">Đặt phòng</a>
           <a href="#cancel">Hủy phòng</a>
-          <a href="#rate-management">Quản lý giá</a>
+      {isAdmin && <a href="#rate-management">Quản lý giá</a>}
         </nav>
       </header>
 
@@ -536,7 +559,8 @@ Khách: {guests.map((guest, index) => (
             <p>Tra cứu và hủy booking khi cần thiết.</p>
           </div>
         </section>
-        <section className="search-card" id="rate-management">
+       {isAdmin && (
+<section className="search-card" id="rate-management">
   <div className="section-title">
     <p>QUẢN LÝ GIÁ</p>
     <h2>Cập nhật giá phòng</h2>
@@ -641,6 +665,7 @@ Khách: {guests.map((guest, index) => (
     </p>
   )}
 </section>
+)}
       </main>
 
       <footer>
