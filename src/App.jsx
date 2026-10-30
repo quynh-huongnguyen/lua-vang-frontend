@@ -242,7 +242,7 @@ console.log('BOOKING RESULT:', data)
 
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/update-base-rate`,
+   `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/update-base-rate-1`,
       {
         method: 'POST',
         headers: {
