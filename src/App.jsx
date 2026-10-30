@@ -249,6 +249,7 @@ console.log('BOOKING RESULT:', data)
           'Content-Type': 'application/json',
           apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'x-api-key': 'MyRateSecret_2026_3001@#',
         },
         body: JSON.stringify({
           room_type: roomType,
