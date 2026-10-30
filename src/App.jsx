@@ -498,12 +498,14 @@ Phòng: <strong>{selectedRoom.room_id}</strong> – {selectedRoom.room_type}
 <br />
 Ngày: {checkIn} đến {checkOut}
 <br />
-Khách: {guests.map((guest, index) => (
-  <span key={index}>
-    {index > 0 ? ', ' : ''}
-    {guest.guest_name}
-  </span>
-))}
+Khách: {guests.length > 0
+  ? guests.map((guest, index) => (
+      <span key={index}>
+        {index > 0 ? ', ' : ''}
+        {guest.guest_name}
+      </span>
+    ))
+  : guestName}
   </p>
 )}
           </section>
