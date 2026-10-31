@@ -237,6 +237,13 @@ console.log('BOOKING RESULT:', data)
 }
   const handleUpdateRate = async (e) => {
   e.preventDefault()
+  if (staffCode !== '18042026') {
+  setRateStatus('error')
+  setRateResult({
+    error: 'Mã nhân viên không hợp lệ.',
+  })
+  return
+}
   setRateStatus('loading')
   setRateResult(null)
 
